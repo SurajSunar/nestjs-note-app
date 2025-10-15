@@ -10,3 +10,14 @@ Content-Type: application/json
     "email": "es1@example.com",
     "password": "Test@123"
 }
+
+
+
+### Loging user
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+    "email": "es2@example.com",
+    "password": "Tewst@123"
+}
