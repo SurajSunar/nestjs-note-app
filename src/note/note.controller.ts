@@ -7,11 +7,8 @@ import {
   Param,
   Delete,
   UseGuards,
-  NotFoundException,
   Request,
   Logger,
-  HttpException,
-  HttpStatus,
   InternalServerErrorException,
   Query,
   ParseIntPipe,
@@ -21,6 +18,7 @@ import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { User } from 'generated/prisma';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('api/notes')
 export class NoteController {
