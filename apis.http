@@ -1,8 +1,7 @@
-GET http://localhost:3000
-
+@baseUrl =  http://localhost:3000
 
 ### Register user
-POST http://localhost:3000/auth/register
+POST {{baseUrl}}/auth/register
 Content-Type: application/json
 
 {
@@ -13,11 +12,54 @@ Content-Type: application/json
 
 
 
-### Loging user
-POST http://localhost:3000/auth/login
+### Login user
+# @name login
+POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-    "email": "es2@example.com",
-    "password": "Tewst@123"
+    "email": "es1@example.com",
+    "password": "Test@123"
 }
+
+###
+
+@authToken = Bearer {{login.response.body.access_token}}
+
+### Get notes
+GET {{baseUrl}}/api/notes
+Content-Type: application/json
+Authorization: {{authToken}}
+
+### Create note
+POST {{baseUrl}}/api/notes
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+    "title": "My Journey to Bhutan 5",
+    "description": "The day started with fresh blue sky with birds humming...."
+}
+
+### Get note by ID
+GET {{baseUrl}}/api/notes/6
+Content-Type: application/json
+Authorization: {{authToken}}
+
+### Update note by ID
+PATCH  {{baseUrl}}/api/notes/6
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+    "title": "My Journey to Bhutan 6",
+    "description": "The day started with fresh blue sky with birds humming...."
+}
+
+
+### Delete note by ID
+DELETE   {{baseUrl}}/api/notes/6
+Content-Type: application/json
+Authorization: {{authToken}}
+
+
