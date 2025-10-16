@@ -13,6 +13,8 @@ import {
   HttpException,
   HttpStatus,
   InternalServerErrorException,
+  Query,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { NoteService } from './note.service';
 import { CreateNoteDto } from './dto/create-note.dto';
@@ -31,6 +33,8 @@ export class NoteController {
   async create(@Body() createNoteDto: CreateNoteDto, @Request() req: Request) {
     const { id: userId } = req['user'] as User;
 
+    this.logger.log(req['user']);
+
     return await this.noteService.create(
       {
         ...createNoteDto,
@@ -41,9 +45,20 @@ export class NoteController {
 
   @UseGuards(AuthGuard)
   @Get()
-  async findAll() {
+  async findAll(
+    @Request() req: { user: { id: number } },
+    @Query('take', new ParseIntPipe({ optional: true })) take?: number,
+    @Query('skip', new ParseIntPipe({ optional: true })) skip?: number,
+  ) {
     try {
-      return await this.noteService.findAll({});
+      this.logger.log('take=', take, 'skip=', skip);
+      return await this.noteService.findAll(
+        {
+          take: take || 10,
+          skip: skip || 0,
+        },
+        req.user.id,
+      );
     } catch (error) {
       this.logger.error(error);
       throw new InternalServerErrorException('Error while fetching notes');
@@ -52,42 +67,42 @@ export class NoteController {
 
   @UseGuards(AuthGuard)
   @Get(':id')
-  async findOne(@Param('id') id: string) {
+  async findOne(
+    @Param('id') id: string,
+    @Request() req: { user: { id: number } },
+  ) {
     try {
-      const note = await this.noteService.findOne(+id);
-
-      if (!note) {
-        throw new NotFoundException('Note not found');
-      }
-
+      const note = await this.noteService.findOne(+id, req.user.id);
       return note;
     } catch (error) {
       this.logger.error(error);
-      throw new InternalServerErrorException(
-        'Error while fetching this specific note',
-      );
+      throw error;
     }
   }
 
   @UseGuards(AuthGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateNoteDto: UpdateNoteDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateNoteDto: UpdateNoteDto,
+    @Request() req: { user: { id: number } },
+  ) {
     try {
-      return this.noteService.update(+id, updateNoteDto);
+      return this.noteService.update(+id, updateNoteDto, req.user.id);
     } catch (error) {
       this.logger.error(error);
-      throw new InternalServerErrorException('Issue in updating note');
+      throw error;
     }
   }
 
   @UseGuards(AuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: string, @Request() req: { user: { id: number } },) {
     try {
-      return this.noteService.remove(+id);
+      return this.noteService.remove(+id, req.user.id);
     } catch (error) {
       this.logger.error(error);
-      throw new NotFoundException('Note not found');
+      throw error;
     }
   }
 }

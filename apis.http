@@ -18,7 +18,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-    "email": "es1@example.com",
+    "email": "es@example.com",
     "password": "Test@123"
 }
 
@@ -42,12 +42,12 @@ Authorization: {{authToken}}
 }
 
 ### Get note by ID
-GET {{baseUrl}}/api/notes/6
+GET {{baseUrl}}/api/notes/12
 Content-Type: application/json
 Authorization: {{authToken}}
 
 ### Update note by ID
-PATCH  {{baseUrl}}/api/notes/6
+PATCH  {{baseUrl}}/api/notes/13
 Content-Type: application/json
 Authorization: {{authToken}}
 
@@ -58,7 +58,7 @@ Authorization: {{authToken}}
 
 
 ### Delete note by ID
-DELETE   {{baseUrl}}/api/notes/6
+DELETE   {{baseUrl}}/api/notes/12
 Content-Type: application/json
 Authorization: {{authToken}}
 
